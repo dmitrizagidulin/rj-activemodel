@@ -21,16 +21,12 @@
 require 'test_helper'
 require 'active_model/lint'
 
-describe "RiakJson::ActiveDocument" do
-  before do
-    @active_doc = RiakJson::ActiveDocument.new
-  end
+# Runs the ActiveModel::Lint test suite, to make sure a model fits the ActiveModel API
+# See http://yehudakatz.com/2010/01/10/activemodel-make-any-ruby-object-feel-like-activerecord/
+class ActiveModelLintTest < MiniTest::Unit::TestCase
+  include ActiveModel::Lint::Tests
   
-  context "passes the ActiveModel Lint Tests" do
-    ActiveModel::Lint::Tests.public_instance_methods.map { |method| method.to_s }.grep(/^test/).each do |method|
-      it "should respond to ActiveModel Lint Test '#{method}' method" do
-        @active_doc.to_model.send method
-      end
-    end
+  def setup
+    @model = RiakJson::ActiveModel::SampleModel.new
   end
 end

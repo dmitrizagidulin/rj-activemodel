@@ -18,9 +18,63 @@
 ##
 ## -------------------------------------------------------------------
 
+require "active_model"
+require "active_model/naming"
+require "active_support/concern"
 require "riak_json/active_model/version"
 
-module RiakJson
-  module ActiveModel
+module RiakJson::ActiveModel
+  extend ActiveSupport::Concern
+
+  included do
+    extend ActiveModel::Naming
+  end
+  
+  def to_model
+    self
+  end
+  
+  def collection_name
+    self.class.model_name.plural
+  end
+  
+  def destroyed?
+    false
+  end
+  
+  def errors
+    obj = Object.new
+    def obj.[](key) [] end
+    def obj.full_messages()  [] end
+    obj
+  end
+  
+  def new_record?
+    true
+  end
+  
+  def persisted?
+    !self.new_record?
+  end
+  
+  def to_key
+    new_record? ? nil : [self.key]
+  end
+  
+  def to_param
+    self.key
+  end
+  
+  def to_partial_path
+    "#{self.collection_name}/#{self.key}"
+  end
+  
+  def valid?
+    true
+  end
+  
+  class SampleModel < RiakJson::Document
+    include RiakJson::ActiveModel
   end
 end
+
