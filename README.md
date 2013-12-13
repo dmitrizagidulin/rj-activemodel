@@ -1,6 +1,6 @@
 # RiakJson::ActiveModel
 
-TODO: Write a gem description
+ActiveModel integration for [Riak Jason](https://github.com/basho-labs/riak_json_ruby_client)
 
 ## Installation
 
@@ -16,9 +16,6 @@ Or install it yourself as:
 
     $ gem install riak_json-active_model
 
-## Usage
-
-TODO: Write usage instructions here
 
 ## Contributing
 
