@@ -33,6 +33,21 @@ module RiakJson::ActiveModel
     include RiakJson::ActiveModel::Conversion
   end
 
+  # @return [RiakJson::Client] The client for the current thread.
+  def client
+    Thread.current[:riak_json_client] ||= RiakJson::Client.new
+  end
+
+  # Sets the client for the current thread.
+  # @param [RiakJson::Client] value the client
+  def client=(value)
+    Thread.current[:riak_json_client] = value
+  end
+  
+  def collection
+    self.client.collection(self.collection_name)
+  end
+  
   def collection_name
     self.class.model_name.plural
   end

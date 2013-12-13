@@ -28,8 +28,11 @@ describe 'a RiakJson::ActiveDocument' do
   end
   
   context "should implement the RiakJson Collection API" do
-    it "should have a nil key when first initialized" do
-      @user_document.key.must_be_nil
+    it "has a key" do
+      @user_document.key.must_be_nil # first initialized
+      @user_document.key = 'george'
+      @user_document.key.must_equal 'george'
+      @user_document.to_partial_path.must_equal 'users/george'
     end
     
     it "should respond to to_json_document()" do
@@ -41,6 +44,14 @@ describe 'a RiakJson::ActiveDocument' do
     it "should know its collection name" do
       # a document's collection name is used in ActiveModel::Conversion compatibility
       @user_document.collection_name.must_equal 'users'
+    end
+    
+    it "should have access to a Client instance" do
+      @user_document.client.must_be_kind_of RiakJson::Client
+    end
+    
+    it "should have access to a Collection instance" do
+      @user_document.collection.must_be_kind_of RiakJson::Collection
     end
   end
 end
