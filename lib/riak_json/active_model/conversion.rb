@@ -34,7 +34,7 @@ module RiakJson::ActiveModel
     end
     
     def to_partial_path
-      "#{self.collection_name}/#{self.key}"
+      "#{self.class.collection_name}/#{self.key}"
     end
   end
 end

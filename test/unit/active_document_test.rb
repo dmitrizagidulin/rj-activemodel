@@ -43,15 +43,28 @@ describe 'a RiakJson::ActiveDocument' do
   context "when new/instantiated" do
     it "should know its collection name" do
       # a document's collection name is used in ActiveModel::Conversion compatibility
-      @user_document.collection_name.must_equal 'users'
+      User.collection_name.must_equal 'users'
     end
     
     it "should have access to a Client instance" do
-      @user_document.client.must_be_kind_of RiakJson::Client
+      User.client.must_be_kind_of RiakJson::Client
     end
     
     it "should have access to a Collection instance" do
-      @user_document.collection.must_be_kind_of RiakJson::Collection
+      User.collection.must_be_kind_of RiakJson::Collection
+    end
+  end
+  
+  context "provides Persistence capability" do
+    it "implements a find (by key) method, via its collection" do
+      user_key = 'abe'
+      User.collection = MiniTest::Mock.new
+      User.collection.expect :find_by_key, nil, [user_key]
+      User.find(user_key)
+      User.collection.verify
+      
+      # Replace User collection object so other tests arent affected
+      User.collection = User.client.collection(User.collection_name)
     end
   end
 end

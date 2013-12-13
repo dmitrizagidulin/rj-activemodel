@@ -32,25 +32,6 @@ module RiakJson::ActiveModel
     extend ActiveModel::Naming
     include RiakJson::ActiveModel::Conversion
   end
-
-  # @return [RiakJson::Client] The client for the current thread.
-  def client
-    Thread.current[:riak_json_client] ||= RiakJson::Client.new
-  end
-
-  # Sets the client for the current thread.
-  # @param [RiakJson::Client] value the client
-  def client=(value)
-    Thread.current[:riak_json_client] = value
-  end
-  
-  def collection
-    self.client.collection(self.collection_name)
-  end
-  
-  def collection_name
-    self.class.model_name.plural
-  end
   
   def destroyed?
     false
@@ -73,6 +54,35 @@ module RiakJson::ActiveModel
   
   def valid?
     true
+  end
+  
+  module ClassMethods
+    # @return [RiakJson::Client] The client for the current thread.
+    def client
+      Thread.current[:riak_json_client] ||= RiakJson::Client.new
+    end
+  
+    # Sets the client for the current thread.
+    # @param [RiakJson::Client] value the client
+    def client=(value)
+      Thread.current[:riak_json_client] = value
+    end
+    
+    def collection
+      @@collection ||= self.client.collection(self.collection_name)
+    end
+    
+    def collection=(collection_obj)
+      @@collection = collection_obj
+    end
+    
+    def collection_name
+      self.model_name.plural
+    end
+    
+    def find(key)
+      self.collection.find_by_key(key)
+    end
   end
   
   class SampleModel < RiakJson::Document
