@@ -21,6 +21,7 @@
 require "active_model"
 require "active_model/naming"
 require "active_support/concern"
+require "riak_json/active_model/active_document"
 require "riak_json/active_model/conversion"
 require "riak_json/active_model/version"
 

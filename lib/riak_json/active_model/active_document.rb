@@ -18,22 +18,18 @@
 ##
 ## -------------------------------------------------------------------
 
-require 'test_helper'
+require "active_support/concern"
 
-describe 'a RiakJson::ActiveDocument' do
-  before do
-    # See test/examples/models/user.rb
-    # User class includes the RiakJson::ActiveDocument mixin
-    @document = User.new
-  end
-  
-  context "should implement the RiakJson Collection API" do
-    it "should have a nil key when first initialized" do
-      @document.key.must_be_nil
+module RiakJson
+  module ActiveDocument
+    extend ActiveSupport::Concern
+    
+    included do
+      attr_accessor :key
     end
     
-    it "should respond to to_json_document()" do
-      assert @document.respond_to?(:to_json_document)
+    def to_json_document
+      
     end
   end
 end
