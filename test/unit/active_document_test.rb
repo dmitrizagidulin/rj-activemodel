@@ -24,16 +24,23 @@ describe 'a RiakJson::ActiveDocument' do
   before do
     # See test/examples/models/user.rb
     # User class includes the RiakJson::ActiveDocument mixin
-    @document = User.new
+    @user_document = User.new
   end
   
   context "should implement the RiakJson Collection API" do
     it "should have a nil key when first initialized" do
-      @document.key.must_be_nil
+      @user_document.key.must_be_nil
     end
     
     it "should respond to to_json_document()" do
-      assert @document.respond_to?(:to_json_document)
+      assert @user_document.respond_to?(:to_json_document)
+    end
+  end
+  
+  context "when new/instantiated" do
+    it "should know its collection name" do
+      # a document's collection name is used in ActiveModel::Conversion compatibility
+      @user_document.collection_name.must_equal 'users'
     end
   end
 end

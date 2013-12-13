@@ -25,6 +25,8 @@ module RiakJson
     extend ActiveSupport::Concern
     
     included do
+      include RiakJson::ActiveModel
+      
       attr_accessor :key
     end
     
