@@ -16,6 +16,10 @@ Or install it yourself as:
 
     $ gem install riak_json-active_model
 
+## Unit Testing
+```
+bundle exec rake test
+```
 
 ## Contributing
 
