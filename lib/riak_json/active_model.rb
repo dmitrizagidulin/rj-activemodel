@@ -23,6 +23,7 @@ require "active_model/naming"
 require "active_support/concern"
 require "riak_json/active_model/active_document"
 require "riak_json/active_model/conversion"
+require "riak_json/active_model/persistence"
 require "riak_json/active_model/version"
 
 module RiakJson::ActiveModel
@@ -31,6 +32,7 @@ module RiakJson::ActiveModel
   included do
     extend ActiveModel::Naming
     include RiakJson::ActiveModel::Conversion
+    include RiakJson::ActiveModel::Persistence
   end
   
   def destroyed?
@@ -78,10 +80,6 @@ module RiakJson::ActiveModel
     
     def collection_name
       self.model_name.plural
-    end
-    
-    def find(key)
-      self.collection.find_by_key(key)
     end
   end
   
