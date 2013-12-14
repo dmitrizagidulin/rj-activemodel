@@ -21,20 +21,5 @@
 # Provides ActiveModel::Conversion capabilities
 module RiakJson::ActiveModel
   module Conversion
-    def to_key
-      new_record? ? nil : [self.key]
-    end
-    
-    def to_model
-      self
-    end
-    
-    def to_param
-      self.key
-    end
-    
-    def to_partial_path
-      "#{self.class.collection_name}/#{self.key}"
-    end
   end
 end

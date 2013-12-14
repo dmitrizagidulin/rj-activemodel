@@ -47,16 +47,36 @@ module RiakJson::ActiveModel
   end
   
   def new_record?
-    true
+    !@persisted
+  end
+  
+  def persist
+    @persisted = true
+  end
+  
+  def to_key
+    self.new_record? ? nil : [self.key]
+  end
+  
+  def to_model
+    self
+  end
+  
+  def to_param
+    self.key
+  end
+  
+  def to_partial_path
+    "#{self.class.collection_name}/#{self.key}"
   end
   
   def persisted?
     !self.new_record?
   end
   
-  def valid?
-    true
-  end
+#  def valid?
+#    true
+#  end
   
   module ClassMethods
     # @return [RiakJson::Client] The client for the current thread.

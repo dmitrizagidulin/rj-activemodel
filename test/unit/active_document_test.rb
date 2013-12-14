@@ -41,6 +41,11 @@ describe 'a RiakJson::ActiveDocument' do
   end
   
   context "when new/instantiated" do
+    it "should be marked as new" do
+      assert @user_document.new_record?
+      refute @user_document.persisted?
+    end
+    
     it "should know its collection name" do
       # a document's collection name is used in ActiveModel::Conversion compatibility
       User.collection_name.must_equal 'users'
