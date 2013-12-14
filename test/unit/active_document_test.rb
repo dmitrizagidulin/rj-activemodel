@@ -63,7 +63,7 @@ describe 'a RiakJson::ActiveDocument' do
       User.find(user_key)
       User.collection.verify
       
-      # Replace User collection object so other tests arent affected
+      # Replace User collection object so other tests aren't affected
       User.collection = User.client.collection(User.collection_name)
     end
   end
