@@ -20,11 +20,16 @@
 
 require 'test_helper'
 
+def test_user(test_key='earl-123')
+  user = User.new username: 'earl', email: 'earl@desandwich.com'
+  user.key = test_key
+  user
+end
+
 describe "a RiakJson::ActiveDocument's Persistence Layer" do
   it "can read, save, update and delete a document" do
-    user = User.new username: 'earl', email: 'earl@desandwich.com'
     test_key = 'earl-123'
-    user.key = test_key
+    user = test_user(test_key)
     generated_key = user.save
     generated_key.wont_be_nil "Key not generated from document.save"
     generated_key.wont_be_empty "Key not generated from document.save"
@@ -42,9 +47,15 @@ describe "a RiakJson::ActiveDocument's Persistence Layer" do
     
     updated_user = User.find(test_key)
     updated_user.username.must_equal 'earl_de'
+    
+    updated_user.destroy!
   end
   
   it "can simulate all() via all_for_field()" do
+    # Ensure that there's at least one user in teh collection
+    user = test_user
+    user.save
+    
     docs = User.all_for_field(:username)
     docs.wont_be_empty
     docs.first.must_be_kind_of User

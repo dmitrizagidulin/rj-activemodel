@@ -24,6 +24,10 @@ module RiakJson::ActiveModel
   module Persistence
     extend ActiveSupport::Concern
     
+    def destroy!
+      self.class.collection.remove(self)
+    end
+    
     def save
       result = self.class.collection.insert(self)
       self.persist
