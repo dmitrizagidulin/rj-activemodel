@@ -34,4 +34,10 @@ describe "a RiakJson::ActiveDocument's Persistence Layer" do
     found_user.must_be_kind_of User
     found_user.key.must_equal test_key
   end
+  
+  it "can simulate all() via all_for_field()" do
+    docs = User.all_for_field(:username)
+    docs.wont_be_empty
+    docs.first.must_be_kind_of User
+  end
 end

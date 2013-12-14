@@ -29,12 +29,21 @@ module RiakJson::ActiveModel
     end
     
     module ClassMethods
+      # Returns all documents (within results/pagination limit) 
+      #  from a collection.
+      # Implemented instead of all() to get around current RiakJson API limitations
+      # @return [Array] of ActiveDocument instances
+      def all_for_field(field_name)
+        results_limit = 1000  # TODO: Fix hardcoded limit
+        query = {field_name => {'$regex' => "/.*/"}, '$per_page'=>results_limit}.to_json
+        result = self.collection.find(query)
+        result.documents.map {|doc| self.from_json(doc.to_json) }
+      end
+      
       def find(key)
         json_obj = self.collection.get_raw_json(key)
         unless json_obj.nil?
-          instance = self.from_json(json_obj)
-          instance.key = key
-          instance
+          self.from_json(json_obj, key)
         end
       end
     end
