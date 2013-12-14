@@ -21,7 +21,7 @@
 require 'test_helper'
 
 describe "a RiakJson::ActiveDocument's Persistence Layer" do
-  it "can read, save and delete a document" do
+  it "can read, save, update and delete a document" do
     user = User.new username: 'earl', email: 'earl@desandwich.com'
     test_key = 'earl-123'
     user.key = test_key
@@ -36,6 +36,12 @@ describe "a RiakJson::ActiveDocument's Persistence Layer" do
     found_user = User.find(test_key)
     found_user.must_be_kind_of User
     found_user.key.must_equal test_key
+    
+    new_attributes = {username: 'earl_de', email: 'earl_de@gmail.com' }
+    found_user.update(new_attributes)  # Also saves
+    
+    updated_user = User.find(test_key)
+    updated_user.username.must_equal 'earl_de'
   end
   
   it "can simulate all() via all_for_field()" do

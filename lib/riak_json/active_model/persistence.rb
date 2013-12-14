@@ -30,6 +30,17 @@ module RiakJson::ActiveModel
       result
     end
     
+    # Update an object's attributes and save it
+    def update(attrs)
+      self.attributes = attrs
+      self.save
+    end
+    
+    # Update attributes (alias for update() for Rails versions < 4)
+    def update_attributes(attrs)
+      self.update(attrs)
+    end
+    
     module ClassMethods
       # Returns all documents (within results/pagination limit) 
       #  from a collection.
