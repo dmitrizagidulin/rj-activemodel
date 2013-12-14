@@ -30,6 +30,9 @@ describe "a RiakJson::ActiveDocument's Persistence Layer" do
     generated_key.wont_be_empty "Key not generated from document.save"
     user.key.must_equal generated_key
     
+    refute user.new_record?, "Document should not be marked as new after saving"
+    assert user.persisted?, "Document should be marked as persisted after saving"
+    
     found_user = User.find(test_key)
     found_user.must_be_kind_of User
     found_user.key.must_equal test_key

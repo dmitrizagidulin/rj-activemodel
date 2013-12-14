@@ -25,7 +25,9 @@ module RiakJson::ActiveModel
     extend ActiveSupport::Concern
     
     def save
-      self.class.collection.insert(self)
+      result = self.class.collection.insert(self)
+      self.persist
+      result
     end
     
     module ClassMethods
