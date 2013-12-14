@@ -56,10 +56,16 @@ describe 'a RiakJson::ActiveDocument' do
   end
   
   context "provides Persistence capability" do
+    it "can be converted to JSON and back" do
+      user = User.new username: 'earl', email: 'earl@desandwich.com'
+      json_obj = user.to_json_document
+      json_obj.must_be_kind_of String
+    end
+    
     it "implements a find (by key) method, via its collection" do
       user_key = 'abe'
       User.collection = MiniTest::Mock.new
-      User.collection.expect :find_by_key, nil, [user_key]
+      User.collection.expect :get_raw_json, nil, [user_key]
       User.find(user_key)
       User.collection.verify
       

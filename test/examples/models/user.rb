@@ -20,4 +20,7 @@
 
 class User
   include RiakJson::ActiveDocument
+  
+  attribute :username, String
+  attribute :email, String
 end

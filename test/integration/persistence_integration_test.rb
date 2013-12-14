@@ -23,8 +23,15 @@ require 'test_helper'
 describe "a RiakJson::ActiveDocument's Persistence Layer" do
   it "can read, save and delete a document" do
     user = User.new username: 'earl', email: 'earl@desandwich.com'
+    test_key = 'earl-123'
+    user.key = test_key
     generated_key = user.save
+    generated_key.wont_be_nil "Key not generated from document.save"
+    generated_key.wont_be_empty "Key not generated from document.save"
     user.key.must_equal generated_key
     
+    found_user = User.find(test_key)
+    found_user.must_be_kind_of User
+    found_user.key.must_equal test_key
   end
 end

@@ -24,9 +24,18 @@ module RiakJson::ActiveModel
   module Persistence
     extend ActiveSupport::Concern
     
+    def save
+      self.class.collection.insert(self)
+    end
+    
     module ClassMethods
       def find(key)
-        self.collection.find_by_key(key)
+        json_obj = self.collection.get_raw_json(key)
+        unless json_obj.nil?
+          instance = self.from_json(json_obj)
+          instance.key = key
+          instance
+        end
       end
     end
   end

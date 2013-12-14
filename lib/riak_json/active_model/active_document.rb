@@ -19,6 +19,7 @@
 ## -------------------------------------------------------------------
 
 require "active_support/concern"
+require "virtus"
 
 module RiakJson
   module ActiveDocument
@@ -26,12 +27,24 @@ module RiakJson
     
     included do
       include RiakJson::ActiveModel
+      include Virtus.model
       
       attr_accessor :key
     end
     
     def to_json_document
+      self.attributes.to_json
+    end
+    
+    module ClassMethods
+      def from_json(json_obj)
+        attributes_hash = JSON.parse(json_obj)
+        self.instantiate(attributes_hash)
+      end
       
+      def instantiate(attributes)
+        self.new attributes
+      end
     end
   end
 end
