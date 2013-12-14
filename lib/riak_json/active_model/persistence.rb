@@ -35,7 +35,10 @@ module RiakJson::ActiveModel
       # @return [Array] of ActiveDocument instances
       def all_for_field(field_name)
         results_limit = 1000  # TODO: Fix hardcoded limit
-        query = {field_name => {'$regex' => "/.*/"}, '$per_page'=>results_limit}.to_json
+        query = {
+            field_name => {'$regex' => "/.*/"},
+            '$per_page'=>results_limit
+        }.to_json
         result = self.collection.find(query)
         result.documents.map {|doc| self.from_json(doc.to_json) }
       end
