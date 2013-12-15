@@ -65,6 +65,10 @@ describe 'a RiakJson::ActiveDocument' do
       user = User.new username: 'earl', email: 'earl@desandwich.com'
       json_obj = user.to_json_document
       json_obj.must_be_kind_of String
+      
+      new_user = User.from_json(json_obj)
+      new_user.must_be_kind_of User
+      new_user.username.must_equal 'earl'
     end
     
     it "can be converted from a RiakJson::Document instance" do
