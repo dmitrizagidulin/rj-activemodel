@@ -67,6 +67,10 @@ module RiakJson::ActiveModel
         end
       end
       
+      def find_one(query)
+        doc = self.collection.find_one(query)
+        self.from_document(doc) 
+      end
     end
   end
 end

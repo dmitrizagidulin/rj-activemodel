@@ -20,13 +20,21 @@
 
 require 'test_helper'
 
+TEST_USERNAME = 'earl'
+
 def test_user(test_key='earl-123')
-  user = User.new username: 'earl', email: 'earl@desandwich.com'
+  user = User.new username: TEST_USERNAME, email: 'earl@desandwich.com'
   user.key = test_key
   user
 end
 
 describe "a RiakJson::ActiveDocument's Persistence Layer" do
+  before do
+    # Ensure that there's at least one user in the collection
+    user = test_user
+    user.save
+  end
+  
   it "can read, save, update and delete a document" do
     test_key = 'earl-123'
     user = test_user(test_key)
@@ -52,12 +60,16 @@ describe "a RiakJson::ActiveDocument's Persistence Layer" do
   end
   
   it "can simulate all() via all_for_field()" do
-    # Ensure that there's at least one user in teh collection
-    user = test_user
-    user.save
-    
     docs = User.all_for_field(:username)
     docs.wont_be_empty
     docs.first.must_be_kind_of User
+  end
+  
+  it "implements a find_one() method to pass through queries to the collection" do
+    query = { username: TEST_USERNAME }.to_json
+    user = User.find_one(query)
+    user.wont_be_nil
+    user.must_be_kind_of User
+    user.username.must_equal TEST_USERNAME
   end
 end
