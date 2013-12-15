@@ -66,6 +66,7 @@ module RiakJson::ActiveModel
           self.from_json(json_obj, key)
         end
       end
+      
     end
   end
 end

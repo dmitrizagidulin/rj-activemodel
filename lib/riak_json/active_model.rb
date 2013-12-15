@@ -101,6 +101,13 @@ module RiakJson::ActiveModel
     def collection_name
       self.model_name.plural
     end
+    
+    # Converts from a RiakJson::Document instance to an instance of itself
+    def from_document(doc)
+      active_doc_instance = self.instantiate(doc.body)
+      active_doc_instance.key = doc.key
+      active_doc_instance
+    end
   end
   
   class SampleModel < RiakJson::Document

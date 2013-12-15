@@ -67,6 +67,17 @@ describe 'a RiakJson::ActiveDocument' do
       json_obj.must_be_kind_of String
     end
     
+    it "can be converted from a RiakJson::Document instance" do
+      doc_key = '1234'
+      doc_body = { username: 'earl', email: 'earl@desandwich.com' }
+      doc = RiakJson::Document.new(doc_key, doc_body)
+      
+      user = User.from_document(doc)
+      user.must_be_kind_of User
+      user.key.must_equal doc_key
+      user.attributes.must_equal doc_body
+    end
+    
     it "implements a find (by key) method, via its collection" do
       user_key = 'abe'
       User.collection = MiniTest::Mock.new
