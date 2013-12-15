@@ -38,7 +38,9 @@ module RiakJson
     
     module ClassMethods
       def from_json(json_obj, key=nil)
+        return nil if json_obj.nil? or json_obj.empty?
         attributes_hash = JSON.parse(json_obj)
+        return nil if attributes_hash.empty?
         instance = self.instantiate(attributes_hash)
         if key.nil?
           # Load key from the JSON object
