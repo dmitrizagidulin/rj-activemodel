@@ -71,7 +71,16 @@ describe 'a RiakJson::ActiveDocument' do
       new_user.username.must_equal 'earl'
     end
     
+    it "from_json() returns nil if passed in an empty result string" do
+      User.from_json(nil).must_be_nil
+      User.from_json('').must_be_nil
+      User.from_json([].to_json).must_be_nil
+    end
+    
     it "can be converted from a RiakJson::Document instance" do
+      # Conversion from a nil document also results in nil
+      User.from_document(nil).must_be_nil
+      
       doc_key = '1234'
       doc_body = { username: 'earl', email: 'earl@desandwich.com' }
       doc = RiakJson::Document.new(doc_key, doc_body)
