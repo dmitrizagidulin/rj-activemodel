@@ -23,3 +23,14 @@ require 'minitest-spec-context'
 require 'riak_json'
 require 'riak_json/active_model'
 require 'examples/models/user'
+
+# :before_suite
+
+# Ensure that the db is populated by users
+user = User.new username: 'earl', email: 'earl@desandwich.com'
+user.key = 'earl-123'
+user.save
+
+user = User.new username: 'count', email: 'count@demontecristo.com'
+user.key = 'count-123'
+user.save

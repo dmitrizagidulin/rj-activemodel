@@ -21,6 +21,7 @@
 require 'test_helper'
 
 TEST_USERNAME = 'earl'
+TEST_USERNAME_2 = 'count'
 
 def test_user(test_key='earl-123')
   user = User.new username: TEST_USERNAME, email: 'earl@desandwich.com'
@@ -28,14 +29,8 @@ def test_user(test_key='earl-123')
   user
 end
 
-describe "a RiakJson::ActiveDocument's Persistence Layer" do
-  before do
-    # Ensure that there's at least one user in the collection
-    user = test_user
-    user.save
-  end
-  
-  it "can read, save, update and delete a document" do
+describe "a RiakJson::ActiveDocument's Persistence Layer" do  
+  it "can save a document" do
     test_key = 'earl-123'
     user = test_user(test_key)
     generated_key = user.save
@@ -45,7 +40,10 @@ describe "a RiakJson::ActiveDocument's Persistence Layer" do
     
     refute user.new_record?, "Document should not be marked as new after saving"
     assert user.persisted?, "Document should be marked as persisted after saving"
-    
+  end
+  
+  it "can read, update and delete a document" do
+    test_key = 'earl-123'
     found_user = User.find(test_key)
     found_user.must_be_kind_of User
     found_user.key.must_equal test_key
@@ -56,7 +54,10 @@ describe "a RiakJson::ActiveDocument's Persistence Layer" do
     updated_user = User.find(test_key)
     updated_user.username.must_equal 'earl_de'
     
-    updated_user.destroy!
+    new_user = User.new username: 'george', email: 'george@washington.com'
+    new_user.key = 'george'
+    new_user.save
+    new_user.destroy!
   end
   
   it "can simulate all() via all_for_field()" do
@@ -66,10 +67,10 @@ describe "a RiakJson::ActiveDocument's Persistence Layer" do
   end
   
   it "implements a find_one() method to pass through queries to the collection" do
-    query = { username: TEST_USERNAME }.to_json
+    query = { username: TEST_USERNAME_2 }.to_json
     user = User.find_one(query)
-    user.wont_be_nil
+    user.wont_be_nil "User.find_one should return a valid result."
     user.must_be_kind_of User
-    user.username.must_equal TEST_USERNAME
+    user.username.must_equal TEST_USERNAME_2
   end
 end
