@@ -30,9 +30,12 @@ describe 'a RiakJson::ActiveDocument' do
   context "should implement the RiakJson Collection API" do
     it "has a key" do
       @user_document.key.must_be_nil # first initialized
-      @user_document.key = 'george'
-      @user_document.key.must_equal 'george'
+      test_key = 'george'
+      @user_document.key = test_key
+      @user_document.key.must_equal test_key
       @user_document.to_partial_path.must_equal 'users/george'
+      # Test for the .id alias
+      @user_document.id.must_equal test_key
     end
     
     it "should respond to to_json_document()" do

@@ -30,6 +30,7 @@ module RiakJson
       include Virtus.model
       
       attr_accessor :key
+      alias_method :id, :key
     end
     
     def to_json_document
