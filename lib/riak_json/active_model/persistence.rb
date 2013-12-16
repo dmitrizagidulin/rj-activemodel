@@ -61,10 +61,8 @@ module RiakJson::ActiveModel
       end
       
       def find(key)
-        json_obj = self.collection.get_raw_json(key)
-        unless json_obj.nil?
-          self.from_json(json_obj, key)
-        end
+        doc = self.collection.find_by_key(key)
+        self.from_document(doc)
       end
       
       def where(query)

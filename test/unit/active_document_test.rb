@@ -97,7 +97,7 @@ describe 'a RiakJson::ActiveDocument' do
     it "implements a find (by key) method, via its collection" do
       user_key = 'abe'
       User.collection = MiniTest::Mock.new
-      User.collection.expect :get_raw_json, nil, [user_key]
+      User.collection.expect :find_by_key, nil, [user_key]
       User.find(user_key)
       User.collection.verify
       
