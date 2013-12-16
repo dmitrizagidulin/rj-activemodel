@@ -91,11 +91,11 @@ module RiakJson::ActiveModel
     end
     
     def collection
-      @@collection ||= self.client.collection(self.collection_name)
+      @collection ||= self.client.collection(self.collection_name)
     end
     
     def collection=(collection_obj)
-      @@collection = collection_obj
+      @collection = collection_obj
     end
     
     def collection_name
