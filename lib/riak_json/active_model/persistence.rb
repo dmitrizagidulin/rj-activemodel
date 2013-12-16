@@ -24,7 +24,7 @@ module RiakJson::ActiveModel
   module Persistence
     extend ActiveSupport::Concern
     
-    def destroy!
+    def destroy
       self.class.collection.remove(self)
     end
     

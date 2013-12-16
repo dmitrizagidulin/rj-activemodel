@@ -59,7 +59,7 @@ describe "a RiakJson::ActiveDocument's Persistence Layer" do
     new_user = User.new username: 'george', email: 'george@washington.com'
     new_user.key = 'george'
     new_user.save
-    new_user.destroy!
+    new_user.destroy
   end
   
   it "can simulate all() via all_for_field()" do
