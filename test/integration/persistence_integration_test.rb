@@ -44,9 +44,11 @@ describe "a RiakJson::ActiveDocument's Persistence Layer" do
   
   it "can read, update and delete a document" do
     test_key = 'earl-123'
-    found_user = User.find(test_key)
+    found_user = User.find(test_key) # Load User by key
     found_user.must_be_kind_of User
     found_user.key.must_equal test_key
+    refute found_user.new_record?, "A loaded by key user object is not new"
+    assert found_user.persisted?, "A loaded by key user object should be markes as persisted"
     
     new_attributes = {username: 'earl_de', email: 'earl_de@gmail.com' }
     found_user.update(new_attributes)  # Also saves
@@ -64,6 +66,8 @@ describe "a RiakJson::ActiveDocument's Persistence Layer" do
     docs = User.all_for_field(:username)
     docs.wont_be_empty
     docs.first.must_be_kind_of User
+    refute docs.first.new_record?
+    assert docs.first.persisted?
   end
   
   it "returns an empty array for queries that return no results" do
@@ -78,5 +82,7 @@ describe "a RiakJson::ActiveDocument's Persistence Layer" do
     user.wont_be_nil "User.find_one should return a valid result."
     user.must_be_kind_of User
     user.username.must_equal TEST_USERNAME_2
+    refute user.new_record?
+    assert user.persisted?
   end
 end

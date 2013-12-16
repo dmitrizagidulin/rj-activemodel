@@ -103,10 +103,13 @@ module RiakJson::ActiveModel
     end
     
     # Converts from a RiakJson::Document instance to an instance of itself
-    def from_document(doc)
+    def from_document(doc, persisted=false)
       return nil if doc.nil?
       active_doc_instance = self.instantiate(doc.body)
       active_doc_instance.key = doc.key
+      if persisted
+        active_doc_instance.persist  # Mark as persisted / not new
+      end
       active_doc_instance
     end
   end
