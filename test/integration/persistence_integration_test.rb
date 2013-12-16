@@ -66,6 +66,12 @@ describe "a RiakJson::ActiveDocument's Persistence Layer" do
     docs.first.must_be_kind_of User
   end
   
+  it "returns an empty array for queries that return no results" do
+    query = { username: 'nonexistent' }.to_json
+    result = User.where(query)
+    result.must_be_empty
+  end
+  
   it "implements a find_one() method to pass through queries to the collection" do
     query = { username: TEST_USERNAME_2 }.to_json
     user = User.find_one(query)

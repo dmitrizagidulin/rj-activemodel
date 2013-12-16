@@ -57,7 +57,7 @@ module RiakJson::ActiveModel
             '$per_page'=>results_limit
         }.to_json
         result = self.collection.find(query)
-        result.documents.map {|doc| self.from_json(doc.to_json) }
+        result.documents.map {|doc| self.from_document(doc) }
       end
       
       def find(key)
@@ -65,6 +65,11 @@ module RiakJson::ActiveModel
         unless json_obj.nil?
           self.from_json(json_obj, key)
         end
+      end
+      
+      def where(query)
+        result = self.collection.find(query)
+        result.documents.map {|doc| self.from_document(doc) }
       end
       
       def find_one(query)
