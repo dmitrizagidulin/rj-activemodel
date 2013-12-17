@@ -104,5 +104,10 @@ describe 'a RiakJson::ActiveDocument' do
       # Replace User collection object so other tests aren't affected
       User.collection = User.client.collection(User.collection_name)
     end
+    
+    it "returns nil when doing a find() for nil or empty key" do
+      User.find(nil).must_be_nil
+      User.find('').must_be_nil
+    end
   end
 end

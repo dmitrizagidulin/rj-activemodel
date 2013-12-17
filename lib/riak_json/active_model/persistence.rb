@@ -61,6 +61,7 @@ module RiakJson::ActiveModel
       end
       
       def find(key)
+        return nil if key.nil? or key.empty?
         doc = self.collection.find_by_key(key)
         self.from_document(doc, persisted=true)
       end
