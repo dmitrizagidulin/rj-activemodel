@@ -46,7 +46,7 @@ module RiakJson
         active_doc_instance = self.instantiate(doc.body)
         active_doc_instance.key = doc.key
         if persisted
-          active_doc_instance.persist  # Mark as persisted / not new
+          active_doc_instance.persist!  # Mark as persisted / not new
         end
         active_doc_instance
       end

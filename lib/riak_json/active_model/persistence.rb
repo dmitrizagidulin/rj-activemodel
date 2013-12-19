@@ -35,7 +35,7 @@ module RiakJson::ActiveModel
     def save(options={:validate => true})
       return false if options[:validate] && !valid?
       result = self.class.collection.insert(self)
-      self.persist
+      self.persist!
       result
     end
 

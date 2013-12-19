@@ -37,18 +37,28 @@ module RiakJson::ActiveModel
     include RiakJson::ActiveModel::Persistence
   end
   
+  # Has this document been deleted from RiakJson?
+  # Required by ActiveModel::Conversion API
+  # @return [Boolean]
   def destroyed?
     @destroyed ||= false
   end
   
+  # Is this a new, unsaved document?
+  # Required by ActiveModel::Conversion API
+  # @return [Boolean]
   def new_record?
     !persisted?
   end
   
-  def persist
+  
+  def persist!
     @persisted = true
   end
   
+  # Has this document been saved to RiakJson?
+  # Required by ActiveModel::Conversion API
+  # @return [Boolean]
   def persisted?
     @persisted ||= false
   end
@@ -57,6 +67,8 @@ module RiakJson::ActiveModel
     self.new_record? ? nil : [self.key]
   end
   
+  # Returns an instance of an ActiveModel object (ie, itself)
+  # Required by ActiveModel API
   def to_model
     self
   end
