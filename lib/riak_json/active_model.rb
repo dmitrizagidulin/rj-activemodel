@@ -38,15 +38,19 @@ module RiakJson::ActiveModel
   end
   
   def destroyed?
-    false
+    @destroyed ||= false
   end
   
   def new_record?
-    !@persisted
+    !persisted?
   end
   
   def persist
     @persisted = true
+  end
+  
+  def persisted?
+    @persisted ||= false
   end
   
   def to_key
@@ -68,7 +72,6 @@ module RiakJson::ActiveModel
   def persisted?
     !self.new_record?
   end
-
   
   module ClassMethods
     # @return [RiakJson::Client] The client for the current thread.
@@ -93,21 +96,6 @@ module RiakJson::ActiveModel
     def collection_name
       self.model_name.plural
     end
-    
-    # Converts from a RiakJson::Document instance to an instance of itself
-    def from_document(doc, persisted=false)
-      return nil if doc.nil?
-      active_doc_instance = self.instantiate(doc.body)
-      active_doc_instance.key = doc.key
-      if persisted
-        active_doc_instance.persist  # Mark as persisted / not new
-      end
-      active_doc_instance
-    end
-  end
-  
-  class SampleModel < RiakJson::Document
-    include RiakJson::ActiveModel
   end
 end
 

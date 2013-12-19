@@ -27,17 +27,30 @@ module RiakJson
     
     included do
       include RiakJson::ActiveModel
-      include Virtus.model
+      include Virtus.model  # Virtus is used to manage document attributes
       
       attr_accessor :key
-      alias_method :id, :key
+      alias_method :id, :key  # document.id same as document.key, to maintain Rails idiom
     end
     
+    # Needed by the RiakJson::Collection API
+    # Invoked by the document's collection, when writing to RiakJson
     def to_json_document
       self.attributes.to_json
     end
     
     module ClassMethods
+      # Converts from a RiakJson::Document instance to an instance of ActiveDocument
+      def from_document(doc, persisted=false)
+        return nil if doc.nil?
+        active_doc_instance = self.instantiate(doc.body)
+        active_doc_instance.key = doc.key
+        if persisted
+          active_doc_instance.persist  # Mark as persisted / not new
+        end
+        active_doc_instance
+      end
+
       def from_json(json_obj, key=nil)
         return nil if json_obj.nil? or json_obj.empty?
         attributes_hash = JSON.parse(json_obj)

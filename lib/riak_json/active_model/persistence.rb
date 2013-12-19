@@ -24,13 +24,14 @@ module RiakJson::ActiveModel
   module Persistence
     extend ActiveSupport::Concern
     
+    # Delete the document from its collection
     def destroy
       self.class.collection.remove(self)
     end
     
     # Performs validations and saves the document
     # The validation process can be skipped by passing <tt>validate: false</tt>.
-    # @return [String, nil] Returns the key for the inserted document
+    # @return [String] Returns the key for the inserted document
     def save(options={:validate => true})
       return false if options[:validate] && !valid?
       result = self.class.collection.insert(self)
@@ -73,12 +74,15 @@ module RiakJson::ActiveModel
         result.documents.map {|doc| self.from_document(doc, persisted=true) }
       end
       
+      # Load a document by key.
+      # Not to be confused with collection.find() which is a 'find all' query
       def find(key)
         return nil if key.nil? or key.empty?
         doc = self.collection.find_by_key(key)
         self.from_document(doc, persisted=true)
       end
       
+      # Return all documents that match the query
       def where(query)
         result = self.collection.find(query)
         result.documents.map do |doc| 
@@ -86,6 +90,7 @@ module RiakJson::ActiveModel
         end
       end
       
+      # Return the first document that matches the query
       def find_one(query)
         doc = self.collection.find_one(query)
         self.from_document(doc, persisted=true) 
