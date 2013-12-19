@@ -40,13 +40,6 @@ module RiakJson::ActiveModel
     false
   end
   
-  def errors
-    obj = Object.new
-    def obj.[](key) [] end
-    def obj.full_messages()  [] end
-    obj
-  end
-  
   def new_record?
     !@persisted
   end
