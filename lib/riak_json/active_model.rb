@@ -31,6 +31,7 @@ module RiakJson::ActiveModel
 
   included do
     extend ActiveModel::Naming
+    include ActiveModel::Validations
     include RiakJson::ActiveModel::Conversion
     include RiakJson::ActiveModel::Persistence
   end

@@ -23,4 +23,6 @@ class User
   
   attribute :username, String
   attribute :email, String
+  
+  validates_presence_of :username
 end

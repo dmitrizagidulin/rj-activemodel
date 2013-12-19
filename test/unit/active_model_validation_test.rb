@@ -18,22 +18,17 @@
 ##
 ## -------------------------------------------------------------------
 
-require 'minitest/autorun'
-require 'minitest-spec-context'
-require 'riak_json'
-require 'riak_json/active_model'
-require 'examples/models/user'
+require 'test_helper'
 
-# Set this to silence "[deprecated] I18n.enforce_available_locales will default to true in the future." warnings
-I18n.config.enforce_available_locales = true
-
-# :before_suite
-
-# Ensure that the db is populated by users
-user = User.new username: 'earl', email: 'earl@desandwich.com'
-user.key = 'earl-123'
-user.save
-
-user = User.new username: 'count', email: 'count@demontecristo.com'
-user.key = 'count-123'
-user.save
+describe "a RiakJson::ActiveModel instance" do
+  context "enforces validations" do
+    it "validates presence of" do
+      user = User.new
+      # User requires a :username to be present
+      refute user.valid?
+      assert user.errors.messages.include?(:username)
+      user.username = 'TestUser'
+      assert user.valid?
+    end
+  end
+end
