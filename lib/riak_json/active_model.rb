@@ -69,10 +69,6 @@ module RiakJson::ActiveModel
     "#{self.class.collection_name}/#{self.key}"
   end
   
-  def persisted?
-    !self.new_record?
-  end
-  
   module ClassMethods
     # @return [RiakJson::Client] The client for the current thread.
     def client
