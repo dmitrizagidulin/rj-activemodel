@@ -27,6 +27,7 @@ class ActiveModelLintTest < MiniTest::Unit::TestCase
   include ActiveModel::Lint::Tests
   
   def setup
-    @model = RiakJson::ActiveModel::SampleModel.new
+    # Sample RiakJson::ActiveModel instance. See test/examples/models/user.rb
+    @model = User.new
   end
 end
