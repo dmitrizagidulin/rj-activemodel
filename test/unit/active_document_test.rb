@@ -45,8 +45,10 @@ describe 'a RiakJson::ActiveDocument' do
   
   context "when new/instantiated" do
     it "should be marked as new" do
-      assert @user_document.new_record?
-      refute @user_document.persisted?
+      @new_doc = User.new
+      assert @new_doc.new_record?
+      refute @new_doc.persisted?
+      refute @new_doc.destroyed?
     end
     
     it "should know its collection name" do
