@@ -22,7 +22,6 @@ require "active_model"
 require "active_model/naming"
 require "active_support/concern"
 require "riak_json/active_model/active_document"
-require "riak_json/active_model/conversion"
 require "riak_json/active_model/errors"
 require "riak_json/active_model/persistence"
 require "riak_json/active_model/version"
@@ -33,7 +32,6 @@ module RiakJson::ActiveModel
   included do
     extend ActiveModel::Naming
     include ActiveModel::Validations
-    include RiakJson::ActiveModel::Conversion
     include RiakJson::ActiveModel::Persistence
   end
   
@@ -51,7 +49,8 @@ module RiakJson::ActiveModel
     !persisted?
   end
   
-  
+  # Mark the document as saved/persisted
+  # Called by +save+, and when instantiating query results (see ::Persistence)
   def persist!
     @persisted = true
   end
@@ -63,20 +62,32 @@ module RiakJson::ActiveModel
     @persisted ||= false
   end
   
+  # Returns an Enumerable of all key attributes if any is set, or +nil+ if
+  # the document is not persisted
+  # Required by ActiveModel::Conversion API
   def to_key
     self.new_record? ? nil : [self.key]
   end
   
   # Returns an instance of an ActiveModel object (ie, itself)
-  # Required by ActiveModel API
+  # Required by ActiveModel::Conversion API
   def to_model
     self
   end
   
+  # Returns a +string+ representing the object's key suitable for use in URLs,
+  # or +nil+ if <tt>persisted?</tt> is +false+.
+  # Required by ActiveModel::Conversion API
+  # @return [String, nil]
   def to_param
     self.key
   end
   
+  # Returns a +string+ identifying the path associated with the object.
+  # ActionPack uses this to find a suitable partial to represent the object.
+  # Used in Rails helper methods such as +link_to+
+  # Required by ActiveModel::Conversion API
+  # @return [String]
   def to_partial_path
     "#{self.class.collection_name}/#{self.key}"
   end
@@ -93,14 +104,18 @@ module RiakJson::ActiveModel
       Thread.current[:riak_json_client] = value
     end
     
+    # Returns a RiakJson::Collection instance for this document
     def collection
       @collection ||= self.client.collection(self.collection_name)
     end
     
+    # Sets the RiakJson::Collection instance for this document
     def collection=(collection_obj)
       @collection = collection_obj
     end
     
+    # Returns string representation for the collection name
+    # Uses ActiveModel::Naming functionality to derive the name
     def collection_name
       self.model_name.plural
     end

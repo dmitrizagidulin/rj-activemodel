@@ -27,6 +27,7 @@ module RiakJson::ActiveModel
     # Delete the document from its collection
     def destroy
       self.class.collection.remove(self)
+      @destroyed = true
     end
     
     # Performs validations and saves the document

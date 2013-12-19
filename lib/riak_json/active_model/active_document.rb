@@ -41,6 +41,7 @@ module RiakJson
     
     module ClassMethods
       # Converts from a RiakJson::Document instance to an instance of ActiveDocument
+      # @return [ActiveDocument, nil] ActiveDocument instance, or nil if the Document is nil
       def from_document(doc, persisted=false)
         return nil if doc.nil?
         active_doc_instance = self.instantiate(doc.body)
@@ -51,6 +52,9 @@ module RiakJson
         active_doc_instance
       end
 
+      # Returns an ActiveDocument instance, given a JSON string
+      # The JSON string is typically obtained from a RiakJson collection query
+      # @return [ActiveDocument, nil] ActiveDocument instance, or nil if the JSON string is nil/empty
       def from_json(json_obj, key=nil)
         return nil if json_obj.nil? or json_obj.empty?
         attributes_hash = JSON.parse(json_obj)
@@ -64,6 +68,7 @@ module RiakJson
         instance
       end
       
+      # Returns an ActiveDocument instance, given a Hash of attributes
       def instantiate(attributes)
         self.new attributes
       end
