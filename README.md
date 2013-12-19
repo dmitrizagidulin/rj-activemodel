@@ -7,6 +7,7 @@ ActiveModel integration for [Riak Json](https://github.com/basho-labs/riak_json)
  - Riak build with [Riak Json](https://github.com/basho-labs/riak_json) and Solr/Yokozuna enabled 
    (see [Setup](https://github.com/basho-labs/riak_json#setup) section for instructions)
  - [riak_json](https://github.com/basho-labs/riak_json_ruby_client) Ruby Client gem installed locally
+ 
 ## Installation
 Build the ```riak_json``` gem for local installation:
 ```bash
@@ -35,7 +36,6 @@ To specify alternate host and port, use the ```RIAK_HOST``` and ```RIAK_PORT``` 
 ```
 RIAK_HOST=127.0.0.1 RIAK_PORT=10018 bundle exec rake test
 ```
-
 ## Usage
 RiakJson::ActiveModel extends the Riak Json Ruby Client to provide a familiar Rails style API, 
 to help developers use JSON documents in their models and controllers.
