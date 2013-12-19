@@ -18,16 +18,12 @@
 ##
 ## -------------------------------------------------------------------
 
-require 'test_helper'
-
-describe "a RiakJson::ActiveModel instance" do
-  context "enforces validations" do
-    it "validates presence of" do
-      user = User.new
-      refute user.valid?, "User requires a username to be present"
-      assert user.errors.messages.include?(:username), "Missing username validation error when saving"
-      user.username = 'TestUser'
-      assert user.valid?, "User should now be valid, after setting a username"
+module RiakJson
+  # Raised by <tt>save!</tt> when a document does not pass validation
+  class DocumentInvalid < RiakJsonError
+    attr_reader :document # :nodoc:
+    def initialize(document) # :nodoc:
+      @document = document
     end
   end
 end

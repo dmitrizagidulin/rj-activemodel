@@ -30,12 +30,19 @@ def test_user(test_key='earl-123')
 end
 
 describe "a RiakJson::ActiveDocument's Persistence Layer" do  
-  it "can save a document" do
+  it "can save a document, with validations" do
     test_key = 'earl-123'
-    user = test_user(test_key)
+    user = User.new
+    user.key = test_key
+    refute user.save, "User enforces presence of username, save should fail"
+    lambda { user.save! }.must_raise RiakJson::DocumentInvalid
+    
+    user.username = TEST_USERNAME
     generated_key = user.save
+    
     generated_key.wont_be_nil "Key not generated from document.save"
     generated_key.wont_be_empty "Key not generated from document.save"
+    generated_key.must_be_kind_of String
     user.key.must_equal generated_key
     
     refute user.new_record?, "Document should not be marked as new after saving"

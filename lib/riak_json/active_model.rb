@@ -23,6 +23,7 @@ require "active_model/naming"
 require "active_support/concern"
 require "riak_json/active_model/active_document"
 require "riak_json/active_model/conversion"
+require "riak_json/active_model/errors"
 require "riak_json/active_model/persistence"
 require "riak_json/active_model/version"
 
@@ -67,10 +68,7 @@ module RiakJson::ActiveModel
   def persisted?
     !self.new_record?
   end
-  
-#  def valid?
-#    true
-#  end
+
   
   module ClassMethods
     # @return [RiakJson::Client] The client for the current thread.

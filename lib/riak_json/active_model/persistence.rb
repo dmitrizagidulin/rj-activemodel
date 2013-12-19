@@ -28,10 +28,23 @@ module RiakJson::ActiveModel
       self.class.collection.remove(self)
     end
     
-    def save
+    # Performs validations and saves the document
+    # The validation process can be skipped by passing <tt>validate: false</tt>.
+    # @return [String, nil] Returns the key for the inserted document
+    def save(options={:validate => true})
+      return false if options[:validate] && !valid?
       result = self.class.collection.insert(self)
       self.persist
       result
+    end
+
+    # Attempts to validate and save the document just like +save+ but will raise a +DocumentInvalid+
+    # exception instead of returning +false+ if the doc is not valid.
+    def save!(options={:validate => true})
+      unless save
+        raise RiakJson::DocumentInvalid.new(self)
+      end
+      true
     end
     
     # Update an object's attributes and save it
