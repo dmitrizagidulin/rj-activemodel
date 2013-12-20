@@ -94,6 +94,9 @@ module RiakJson::ActiveModel
       
       # Return all documents that match the query
       def where(query)
+        if query.kind_of? Hash
+          query = query.to_json
+        end
         result = self.collection.find(query)
         result.documents.map do |doc| 
           self.from_document(doc, persisted=true)
@@ -102,6 +105,9 @@ module RiakJson::ActiveModel
       
       # Return the first document that matches the query
       def find_one(query)
+        if query.kind_of? Hash
+          query = query.to_json
+        end
         doc = self.collection.find_one(query)
         self.from_document(doc, persisted=true) 
       end

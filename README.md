@@ -79,7 +79,10 @@ redirect_to users_url
 ```
 Querying:
 ```ruby
-User.where({ country: 'USA' }.to_json)   # => array of US user instances
+# All matching instances
+us_users = User.where({ country: 'USA' })   # => array of US user instances
+# One instance (the first)
+user = User.find_one({ username: 'HieronymusBosch' })
 ```
 ## Unit Testing
 To run both unit and integration tests:
