@@ -32,6 +32,9 @@ module RiakJson::ActiveModel
   included do
     extend ActiveModel::Naming
     include ActiveModel::Validations
+    extend ActiveModel::Callbacks
+    define_model_callbacks :create, :update, :save, :destroy
+
     include RiakJson::ActiveModel::Persistence
   end
   
