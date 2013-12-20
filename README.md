@@ -76,7 +76,21 @@ new_user.valid?  # => true
 new_user.save  # => saves and loads the generated key into document
 new_user.key  # => 'EmuVX4kFHxxvlUVJj5TmPGgGPjP'
 ```
-
+To load a document by key, use ```find()```:
+```ruby
+user = User.find('EmuVX4kFHxxvlUVJj5TmPGgGPjP')
+```
+ActiveModel::Naming based helpers:
+```ruby
+user.collection_name  # => 'users'
+user.to_partial_path  # => 'users/EmuVX4kFHxxvlUVJj5TmPGgGPjP'
+```
+When used as a rails model, the usual ```link_to```/route-based helpers work:
+```
+# In a user view file
+<%= link_to @user.username, @user %> # => <a href="/users/EmuVX4kFHxxvlUVJj5TmPGgGPjP">HieronymusBosch</a>
+<%= link_to 'Edit', edit_user_path(@user) %>  # => <a href="/users/EmuVX4kFHxxvlUVJj5TmPGgGPjP/edit">Edit</a>
+```
 
 
 ## Contributing
