@@ -87,7 +87,7 @@ describe 'a RiakJson::ActiveDocument' do
       User.from_document(nil).must_be_nil
       
       doc_key = '1234'
-      doc_body = { username: 'earl', email: 'earl@desandwich.com' }
+      doc_body = { username: 'earl', email: 'earl@desandwich.com', :language=>"en" }
       doc = RiakJson::Document.new(doc_key, doc_body)
       
       user = User.from_document(doc)
