@@ -61,6 +61,22 @@ class User
   validates_presence_of :username
 end
 ```
+You can now create user documents, save them, and validate.
+```ruby
+# Try saving an invalid document
+new_user = User.new
+new_user.valid?  # => false
+puts user.errors.messages  # => {:username=>["can't be blank"]}
+new_user.save  # => false (does not actually save, since document not valid)
+new_user.save!  # => raises RiakJson::InvalidDocument exception
+
+# Now make it valid
+new_user.username = 'HieronymusBosch'
+new_user.valid?  # => true
+new_user.save  # => saves and loads the generated key into document
+new_user.key  # => 'EmuVX4kFHxxvlUVJj5TmPGgGPjP'
+```
+
 
 
 ## Contributing
