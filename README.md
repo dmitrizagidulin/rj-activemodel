@@ -45,7 +45,7 @@ class User
   
   attribute :username, String
   attribute :email, String
-  attribute :country, String
+  attribute :country, String, default: 'USA'
   
   validates_presence_of :username
 end
@@ -79,7 +79,7 @@ redirect_to users_url
 ```
 Querying:
 ```ruby
-User.where({ username: 'USA' }.to_json)   # => array of US user instances
+User.where({ country: 'USA' }.to_json)   # => array of US user instances
 ```
 ## Unit Testing
 To run both unit and integration tests:
