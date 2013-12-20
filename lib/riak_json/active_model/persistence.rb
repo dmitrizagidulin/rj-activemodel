@@ -26,18 +26,25 @@ module RiakJson::ActiveModel
     
     # Delete the document from its collection
     def destroy
-      self.class.collection.remove(self)
-      @destroyed = true
+      run_callbacks(:destroy) do
+        self.class.collection.remove(self)
+        @destroyed = true
+      end
     end
     
     # Performs validations and saves the document
     # The validation process can be skipped by passing <tt>validate: false</tt>.
+    # Also triggers :before_create / :after_create type callbacks
     # @return [String] Returns the key for the inserted document
     def save(options={:validate => true})
-      return false if options[:validate] && !valid?
-      result = self.class.collection.insert(self)
-      self.persist!
-      result
+      context = new_record? ? :create : :update
+      return false if options[:validate] && !valid?(context)
+      
+      run_callbacks(context) do
+        result = self.class.collection.insert(self)
+        self.persist!
+        result
+      end
     end
 
     # Attempts to validate and save the document just like +save+ but will raise a +DocumentInvalid+
@@ -51,8 +58,10 @@ module RiakJson::ActiveModel
     
     # Update an object's attributes and save it
     def update(attrs)
-      self.attributes = attrs
-      self.save
+      run_callbacks(:update) do
+        self.attributes = attrs
+        self.save
+      end
     end
     
     # Update attributes (alias for update() for Rails versions < 4)
