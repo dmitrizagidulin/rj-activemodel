@@ -57,6 +57,7 @@ class User
   
   attribute :username, String
   attribute :email, String
+  attribute :country, String
   
   validates_presence_of :username
 end
@@ -80,18 +81,18 @@ To load a document by key, use ```find()```:
 ```ruby
 user = User.find('EmuVX4kFHxxvlUVJj5TmPGgGPjP')
 ```
-ActiveModel::Naming based helpers:
-```ruby
-user.collection_name  # => 'users'
-user.to_partial_path  # => 'users/EmuVX4kFHxxvlUVJj5TmPGgGPjP'
-```
 When used as a rails model, the usual ```link_to```/route-based helpers work:
-```
+```erb
 # In a user view file
 <%= link_to @user.username, @user %> # => <a href="/users/EmuVX4kFHxxvlUVJj5TmPGgGPjP">HieronymusBosch</a>
 <%= link_to 'Edit', edit_user_path(@user) %>  # => <a href="/users/EmuVX4kFHxxvlUVJj5TmPGgGPjP/edit">Edit</a>
+# In a controller
+redirect_to users_url
 ```
-
+Querying:
+```ruby
+User.where({ username: 'USA' }.to_json)   # => array of US user instances
+```
 
 ## Contributing
 
