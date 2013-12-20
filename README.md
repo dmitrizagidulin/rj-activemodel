@@ -24,18 +24,6 @@ cd rj-activemodel
 gem install ../riak_json_ruby_client/pkg/riak_json-0.0.2.gem
 bundle install
 ```
-## Unit Testing
-To run both unit and integration tests:
-```
-bundle exec rake test
-```
-Note: By default, integration tests assume that Riak is listening on ```127.0.0.1:8098```
-(the result of ```make rel```).
-
-To specify alternate host and port, use the ```RIAK_HOST``` and ```RIAK_PORT``` env variables:
-```
-RIAK_HOST=127.0.0.1 RIAK_PORT=10018 bundle exec rake test
-```
 ## Usage
 RiakJson::ActiveModel extends the Riak Json Ruby Client to provide a familiar Rails style API, 
 to help developers use JSON documents in their models and controllers.
@@ -47,7 +35,7 @@ The project provides an ActiveDocument mixin, with the following features:
  - Provides a simple persistence layer with ```save()```, ```find()```, ```update()``` and ```destroy()``` methods.
  - Provides validations for attributes
  
-### Using RiakJson in a Rails model
+### Using RiakJson in a Rails-like model
 To use RiakJson in your model code, add ```riak_json-active_model``` to your Gemfile,
 and ```include``` RiakJson::ActiveDocument in your model class.
 ```ruby
@@ -93,7 +81,18 @@ Querying:
 ```ruby
 User.where({ username: 'USA' }.to_json)   # => array of US user instances
 ```
+## Unit Testing
+To run both unit and integration tests:
+```
+bundle exec rake test
+```
+Note: By default, integration tests assume that Riak is listening on ```127.0.0.1:8098```
+(the result of ```make rel```).
 
+To specify alternate host and port, use the ```RIAK_HOST``` and ```RIAK_PORT``` env variables:
+```
+RIAK_HOST=127.0.0.1 RIAK_PORT=10018 bundle exec rake test
+```
 ## Contributing
 
 1. Fork it
