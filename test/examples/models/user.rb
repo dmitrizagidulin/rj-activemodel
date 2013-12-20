@@ -23,6 +23,7 @@ class User
   
   attribute :username, String
   attribute :email, String
+  attribute :language, String, default: 'en'
   
   validates_presence_of :username
 end
