@@ -1,6 +1,6 @@
 ## ------------------------------------------------------------------- 
 ## 
-## Copyright (c) "2013" Basho Technologies, Inc.
+## Copyright (c) "2014" Dmitri Zagidulin and Basho Technologies, Inc.
 ##
 ## This file is provided to you under the Apache License,
 ## Version 2.0 (the "License"); you may not use this file
@@ -18,24 +18,16 @@
 ##
 ## -------------------------------------------------------------------
 
-require 'minitest/autorun'
-require 'minitest-spec-context'
-require 'riak_json'
-require 'riak_json/active_model'
-require 'examples/models/user'
-require 'examples/models/address_book'
+class Contact
+  include RiakJson::ActiveDocument
+  
+  attribute :contact_name, String
+  attribute :contact_email, String
+end
 
-
-# Set this to silence "[deprecated] I18n.enforce_available_locales will default to true in the future." warnings
-I18n.config.enforce_available_locales = true
-
-# :before_suite
-
-# Ensure that the db is populated by users
-user = User.new username: 'earl', email: 'earl@desandwich.com'
-user.key = 'earl-123'
-user.save
-
-user = User.new username: 'count', email: 'count@demontecristo.com'
-user.key = 'count-123'
-user.save
+class AddressBook
+  include RiakJson::ActiveDocument
+  
+  attribute :user_key, String
+  attribute :contacts, Set[Contact]
+end
