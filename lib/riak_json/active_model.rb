@@ -98,13 +98,22 @@ module RiakJson::ActiveModel
   module ClassMethods
     # @return [RiakJson::Client] The client for the current thread.
     def client
-      Thread.current[:riak_json_client] ||= RiakJson::Client.new
+      Thread.current[:riak_json_client] ||= client_init
     end
   
     # Sets the client for the current thread.
     # @param [RiakJson::Client] value the client
     def client=(value)
       Thread.current[:riak_json_client] = value
+    end
+    
+    def client_init
+      if defined?(Riagent)
+        config = Riagent.config
+        RiakJson::Client.new(config['host'], config['http_port'])
+      else
+        RiakJson::Client.new
+      end
     end
     
     # Returns a RiakJson::Collection instance for this document
