@@ -34,6 +34,7 @@ The project provides an ActiveDocument mixin, with the following features:
  - Uses [Virtus](https://github.com/solnic/virtus) for document attributes, defaults and coercions
  - Provides a simple persistence layer with ```save()```, ```find()```, ```update()``` and ```destroy()``` methods.
  - Provides validations for attributes
+ - Derives RiakJson/Solr search schemas from annotated document attributes (see Schemas below)
  
 ### Using RiakJson in a Rails-like model
 To use RiakJson in your model code, add ```riak_json-active_model``` to your Gemfile,
@@ -84,6 +85,55 @@ us_users = User.where({ country: 'USA' })   # => array of US user instances
 # One instance (the first)
 user = User.find_one({ username: 'HieronymusBosch' })
 ```
+
+## Search Schema Definition
+RiakJson uses Solr/Yokozuna to provide indexing and search capability for its collections. 
+If you do not specify a collection schema explicitly, RiakJson creates one when you insert the first document to that collection 
+(it [infers the schema](https://github.com/basho-labs/riak_json/blob/master/docs/architecture.md#inferred-schemas) 
+based on the basic data types of the field values in the JSON).
+However, if you do not want to use this default schema behavior (for example, because RJ tries to index all of the fields), 
+you can define and set a collection schema yourself, using RJ Ruby Client's [schema administration](https://github.com/basho-labs/riak_json_ruby_client#schema-administration) 
+API.
+
+To make the process of schema definition even easier for developers, ActiveDocument provides the ```search_index``` attribute
+option. This annotation allows you to specify which document fields you want added to your search schema, as well as the 
+Solr field type that will be used to index it.
+
+For example, the following model:
+```ruby
+class User
+  include RiakJson::ActiveDocument
+  
+  attribute :username, String, required: true, search_index: { :as => :text }
+  attribute :email, String, search_index: { :as => :string }
+  attribute :country, String, default: 'USA'
+end
+```
+will enable you to construct the following schema:
+```ruby
+User.schema   # =>
+#   [{
+#     :name => "username",
+#     :type => "text",
+#     :require => true
+#    }, {
+#     :name => "email",
+#     :type => "string",
+#     :require => false
+#    }
+# ]
+#   # Note that 'country' is not included in this schema, and so will not be indexed.
+```
+
+### Schema Administration
+Note that if you use the ```search_index``` attribute annotations above, you will have to explicitly 
+notify RiakJson of your intent to save the schema. You will have to call the ```set_schema()``` collection
+method before you start inserting documents (for example, in a ```db:setup``` Rake task).
+
+```ruby
+User.collection.set_schema(User.schema)
+```
+
 ## Unit Testing
 To run both unit and integration tests:
 ```
