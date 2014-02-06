@@ -22,6 +22,7 @@ require "active_support/concern"
 require 'active_support/json'
 require 'active_support/core_ext/object/to_json'
 require "virtus"
+require "virtus/attribute"
 
 module RiakJson
   module ActiveDocument
