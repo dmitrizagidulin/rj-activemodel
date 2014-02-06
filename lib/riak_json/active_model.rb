@@ -138,15 +138,7 @@ module RiakJson::ActiveModel
       self.attribute_set.each do | attribute |
         if attribute.options.include? :search_index
           field_type = attribute.options[:search_index][:as]
-          if field_type == :text
-            schema.add_text_field(attribute.options[:name].to_s, attribute.options[:required])
-          elsif field_type == :string
-            schema.add_string_field(attribute.options[:name].to_s, attribute.options[:required])
-          elsif field_type == :multi_string
-            schema.add_multi_string_field(attribute.options[:name].to_s, attribute.options[:required])
-          elsif field_type == :integer
-            schema.add_integer_field(attribute.options[:name].to_s, attribute.options[:required])
-          end
+          schema.add_field(field_type, attribute.options[:name], attribute.options[:required])
         end
       end
       schema
