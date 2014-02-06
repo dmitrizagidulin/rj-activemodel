@@ -93,8 +93,10 @@ Create documents via ```save()``` and ```save!()```
 user = User.new({username: 'John', email: 'john@doe.com'})
 # If you save without specifying a key, RiakJson generates a UUID type key automatically
 user.save  # => 'EmuVX4kFHxxvlUVJj5TmPGgGPjP'
+```
 
 To load a document by key, use ```find()```:
+
 ```ruby
 user = User.find('EmuVX4kFHxxvlUVJj5TmPGgGPjP')
 ```
