@@ -24,19 +24,23 @@ cd rj-activemodel
 gem install ../riak_json_ruby_client/pkg/riak_json-0.0.2.gem
 bundle install
 ```
-## Usage
+## Features
 RiakJson::ActiveModel extends the Riak Json Ruby Client to provide a familiar Rails style API, 
 to help developers use JSON documents in their models and controllers.
 
 The project provides an ActiveDocument mixin, with the following features:
- - Partially implements the Rails ActiveModel API.
+ - Implements the ActiveModel API.
    (Specifically, passes the [ActiveModel Lint Test suite](http://api.rubyonrails.org/classes/ActiveModel/Lint/Tests.html))
- - Uses [Virtus](https://github.com/solnic/virtus) for document attributes, defaults and coercions
- - Provides a simple persistence layer with ```save()```, ```find()```, ```update()``` and ```destroy()``` methods.
- - Provides validations for attributes
+ - Provides a rich Document / Attributes definition format
+ - Provides a simple Key/Value persistence layer with ```save()```, ```find()```, ```update()``` and ```destroy()``` methods.
+ - Provides a full range of validations for each attribute.
+ - Provides ```before_save``` / ```after_save``` type Callback functionality
+ - Provides a custom Query capability (to Riak/Solr), for searches, range queries, aggregations and more
  - Derives RiakJson/Solr search schemas from annotated document attributes (see Schemas below)
  
-### Using RiakJson in a Rails-like model
+## Using RiakJson in a Rails-like model
+
+### Document Definition 
 To use RiakJson in your model code, add ```riak_json-active_model``` to your Gemfile,
 and ```include``` RiakJson::ActiveDocument in your model class.
 ```ruby
@@ -51,7 +55,21 @@ class User
   validates_presence_of :username
 end
 ```
-You can now create user documents, save them, and validate.
+ActiveDocument uses [Virtus](https://github.com/solnic/virtus) for document attributes, defaults and coercions.
+
+Since they implement the ActiveModel API, when you use ActiveDocuments in 
+a Rails model, the usual ```link_to```/route-based helpers work:
+```erb
+# In a user view file
+<%= link_to @user.username, @user %> # => <a href="/users/EmuVX4kFHxxvlUVJj5TmPGgGPjP">HieronymusBosch</a>
+<%= link_to 'Edit', edit_user_path(@user) %>  # => <a href="/users/EmuVX4kFHxxvlUVJj5TmPGgGPjP/edit">Edit</a>
+# In a controller
+redirect_to users_url
+```
+
+### Validations
+ActiveDocument supports the full range of [ActiveModel validations](http://api.rubyonrails.org/classes/ActiveModel/Validations.html)
+
 ```ruby
 # Try saving an invalid document
 new_user = User.new
@@ -66,19 +84,36 @@ new_user.valid?  # => true
 new_user.save  # => saves and loads the generated key into document
 new_user.key  # => 'EmuVX4kFHxxvlUVJj5TmPGgGPjP'
 ```
+
+### Key/Value Persistence
+The usual array of CRUD type k/v operations is available to an ActiveDocument model.
+
+Create documents via ```save()``` and ```save!()```
+```ruby
+user = User.new({username: 'John', email: 'john@doe.com'})
+# If you save without specifying a key, RiakJson generates a UUID type key automatically
+user.save  # => 'EmuVX4kFHxxvlUVJj5TmPGgGPjP'
+
 To load a document by key, use ```find()```:
 ```ruby
 user = User.find('EmuVX4kFHxxvlUVJj5TmPGgGPjP')
 ```
-When used as a rails model, the usual ```link_to```/route-based helpers work:
-```erb
-# In a user view file
-<%= link_to @user.username, @user %> # => <a href="/users/EmuVX4kFHxxvlUVJj5TmPGgGPjP">HieronymusBosch</a>
-<%= link_to 'Edit', edit_user_path(@user) %>  # => <a href="/users/EmuVX4kFHxxvlUVJj5TmPGgGPjP/edit">Edit</a>
-# In a controller
-redirect_to users_url
+
+Update and Delete work in a similar fashion
+```ruby
+user.username = 'New Name'
+user.update  # update!() is also available
+user.destroy  # deletes the document
 ```
-Querying:
+
+### Callbacks
+ActiveDocument currently supports ```before_*``` and ```after_*``` [callbacks](http://api.rubyonrails.org/classes/ActiveSupport/Callbacks.html) 
+for the following events:
+```[:create, :update, :save, :destroy]```
+
+### Search and Querying
+See the Querying sections of [RJ Ruby Client](https://github.com/basho-labs/riak_json_ruby_client#querying-riakjson---find_one-and-find)
+and [RiakJson itself](https://github.com/basho-labs/riak_json/blob/master/docs/query.md)
 ```ruby
 # All matching instances
 us_users = User.where({ country: 'USA' })   # => array of US user instances
