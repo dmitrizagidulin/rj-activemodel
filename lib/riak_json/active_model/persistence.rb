@@ -80,12 +80,11 @@ module RiakJson::ActiveModel
             field_name => {'$regex' => "/.*/"},
             '$per_page'=>results_limit
         }.to_json
-        result = self.collection.find(query)
+        result = self.collection.find_all(query)
         result.documents.map {|doc| self.from_document(doc, persisted=true) }
       end
       
       # Load a document by key.
-      # Not to be confused with collection.find() which is a 'find all' query
       def find(key)
         return nil if key.nil? or key.empty?
         doc = self.collection.find_by_key(key)
@@ -97,7 +96,7 @@ module RiakJson::ActiveModel
         if query.kind_of? Hash
           query = query.to_json
         end
-        result = self.collection.find(query)
+        result = self.collection.find_all(query)
         result.documents.map do |doc| 
           self.from_document(doc, persisted=true)
         end
